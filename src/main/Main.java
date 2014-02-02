@@ -6,6 +6,7 @@ import java.util.List;
 
 import model.Circle;
 import processing.core.PApplet;
+import processing.core.PVector;
 
 
 @SuppressWarnings("serial")
@@ -46,7 +47,7 @@ public class Main extends PApplet {
 			Circle b = selectedCircles.get(selectedCircles.size() - 1);
 			strokeWeight(2);
 			stroke(b.getBorder());
-			line(b.getX(), b.getY(), mouseX, mouseY);
+			line(getX(b), getY(b), mouseX, mouseY);
 		}
 
 		for (int i = 0; i < selectedCircles.size() - 1; i++) {
@@ -54,22 +55,26 @@ public class Main extends PApplet {
 			Circle b = selectedCircles.get(i + 1);
 			strokeWeight(2);
 			stroke(b.getBorder());
-			line(a.getX(), a.getY(), b.getX(), b.getY());
+			line(getX(a), getY(a), getX(b), getY(b));
 		}
 
 		for (int i = 0; i < circles[0].length; i++)
 			for (Circle b: circles[i])
 				if (b != null)
-					b.draw(this);
+					drawCircle(b);
 	}
 
-	public void keyPressed() {
-		switch (key) {
-		default:
-			break;
+	private void drawCircle(Circle b) {
+		pushMatrix();
+		noStroke();
+		if (b.isSelected()) {
+			strokeWeight(4);
+			stroke(b.getBorder());
 		}
+		fill(b.getBorder());
+		ellipse (getX(b), getY(b), b.getDiameter(), b.getDiameter());
+		popMatrix();
 	}
-
 
 	int[] getRandomColor() {
 		int fill[]   = { 
@@ -111,7 +116,7 @@ public class Main extends PApplet {
 
 		Circle lb = selectedCircles.get(selectedCircles.size() - 1);
 
-		if (!b.isSelected() && areNeighbor(b, lb) && b.getFill() == lb.getFill()) {
+		if (!b.isSelected() && areNeighbors(b, lb) && b.getFill() == lb.getFill()) {
 			b.select();
 			selectedCircles.add(b);
 		}
@@ -122,73 +127,85 @@ public class Main extends PApplet {
 			selectedCircles.clear();
 			return;
 		}
-		// Termina a uniao
-		for (Circle b: selectedCircles) { /* temporario */
-			int i = numToCol(b.getX());
-			int j = numToRow(b.getY());
-			circles[j][i] = null;
+
+		for (Circle b: selectedCircles) {
+			int col = b.getColumn();
+			int row = b.getRow();
+			circles[row][col] = null;
 		}
 
-		for (int i = 0; i < COLUMNS; i++) {
+		for (int col = 0; col < COLUMNS; col++) {
 			List<Circle> columnBalls = new ArrayList<Circle>(ROWS);
 			for (int j = ROWS - 1; j >= 0; j--) {
-				if (circles[j][i] != null)
-					columnBalls.add(circles[j][i]);
+				if (circles[j][col] != null)
+					columnBalls.add(circles[j][col]);
 			}
-			int columnIndex = ROWS - 1;
+			
+			int currentRow = ROWS - 1;
 			for (int j = 0; j < columnBalls.size(); j++) {
-				circles[columnIndex][i] = columnBalls.get(j);
-				circles[columnIndex][i].setY(columnIndex * (SCREEN_HEIGHT / ROWS) + (SCREEN_HEIGHT / ROWS) / 2); 
-				columnIndex--;
+				circles[currentRow][col] = columnBalls.get(j);
+				circles[currentRow][col].setRow(currentRow); 
+				currentRow--;
 			}
-			while (columnIndex >= 0) {
-				newBall(i, columnIndex);
-				columnIndex--;
+			
+			while (currentRow >= 0) {
+				newBall(currentRow, col);
+				currentRow--;
 			}
 		}
 		selectedCircles.clear();
 	}
 
-	int numToCol(float x) { 
-		return (int) (x / (SCREEN_WIDTH / COLUMNS));
+	float getX(Circle c) {
+		int cellW = SCREEN_WIDTH / COLUMNS;
+		return c.getColumn() * cellW + cellW/2; 
 	}
-	int numToRow(float y) { 
-		return (int) (y / (SCREEN_HEIGHT / ROWS));
+	
+	float getY(Circle c) {
+		int cellH = SCREEN_HEIGHT / ROWS;
+		return c.getRow() * cellH + cellH/2; 
 	}
 
 	public Circle getBallUnderMouse() {
-		int col = numToCol(mouseX);
-		int row = numToRow(mouseY);
+		int row = (int) (mouseY / (SCREEN_HEIGHT / ROWS));
+		int col = (int) (mouseX / (SCREEN_WIDTH / COLUMNS));
+
 		if (col >= circles[0].length || row >= circles[0].length || row < 0 || col < 0)
 			return null;
+		
 		Circle b = circles[row][col];
-		if (b.inside(mouseX, mouseY))
+		if (mouseInside(b))
 			return b;
+		
 		return null;
 	}
 
-	void newBall(int i, int j) {
-		int y = j * (SCREEN_HEIGHT / ROWS) + (SCREEN_HEIGHT / ROWS) / 2;
-		int x = i * (SCREEN_WIDTH / COLUMNS) + (SCREEN_WIDTH / COLUMNS) / 2;
+	void newBall(int row, int col) {
 		int colors[] = getRandomColor();
-		circles[j][i] = new Circle(x, y, colors[0], colors[1], BALLDIAMETER);
+		circles[row][col] = new Circle(row, col, colors[0], colors[1], BALLDIAMETER);
 	}
 
 	void createBalls() {
 		stroke(color(0, 0, 0));
-		for (int j = 0; j < ROWS; j ++)
-			for (int i = 0; i < COLUMNS; i++)
-				newBall(i, j);
+		for (int row = 0; row < ROWS; row ++)
+			for (int col = 0; col < COLUMNS; col++)
+				newBall(row, col);
 	}
 	
-	public boolean areNeighbor(Circle a, Circle b) {
-		int myCol = numToCol(a.getX());
-		int myRow = numToRow(a.getY());
-		int bCol = numToCol(b.getX());
-		int bRow = numToRow(b.getY());
+	public boolean areNeighbors(Circle a, Circle b) {
+		int myCol = a.getColumn();
+		int myRow = a.getRow();
+		int bCol = b.getColumn();
+		int bRow = b.getRow();
 
 		return xor(myCol == bCol, myRow == bRow) &&
 				xor(abs(myCol - bCol) == 1, abs(myRow - bRow) == 1);
+	}
+	
+	private boolean mouseInside(Circle c) {
+		PVector center = new PVector(getX(c), getY(c));
+		PVector mouse = new PVector(mouseX, mouseY);
+		return PVector.sub(center, mouse).mag() <= c.getDiameter() / 2;
 	}
 
 }
