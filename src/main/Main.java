@@ -14,7 +14,6 @@ public class Main extends PApplet {
 	/* Configs */
 	private static final String PACKAGENAME = "main";
 	private static final String CLASSNAME   = "Main";
-	private static final String RENDERER    = P2D;
 
 	private static final int SCREEN_WIDTH  = 500;
 	private static final int SCREEN_HEIGHT = 500;
@@ -33,7 +32,7 @@ public class Main extends PApplet {
 	}
 
 	public void setup() {
-		size(SCREEN_WIDTH, SCREEN_HEIGHT, RENDERER);		
+		size(SCREEN_WIDTH, SCREEN_HEIGHT);		
 		frameRate(FPS);
 		if (frame != null)
 			frame.setTitle("Dotz");
