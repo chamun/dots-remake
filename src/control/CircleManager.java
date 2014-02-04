@@ -11,17 +11,28 @@ public class CircleManager {
 	private int rows, cols;
 	private Circle circles[][];
 	private Stack<Circle> selected = new Stack<Circle>();
+	private boolean graph [][];
 	private CircleFactory factory;
 
 	public CircleManager(int rows, int columns) {
 		this.rows = rows;
 		this.cols = columns;
 		circles = new Circle[rows][columns];
+		graph = new boolean [rows * columns][rows * columns];
 		factory = CircleFactory.instance();
 
 		for (int row = 0; row < rows; row ++)
 			for (int col = 0; col < cols; col++)
 				circles[row][col] = factory.newCircle(row, col);
+		
+		circles[0][0] = new Circle(0, 0, 0xff000000, 0xff222222, 40);
+		circles[1][0] = new Circle(1, 0, 0xff000000, 0xff222222, 40);
+		circles[0][1] = new Circle(0, 1, 0xff000000, 0xff222222, 40);
+		circles[1][1] = new Circle(1, 1, 0xff000000, 0xff222222, 40);
+		circles[2][1] = new Circle(2, 1, 0xff000000, 0xff222222, 40);
+		circles[1][2] = new Circle(1, 2, 0xff000000, 0xff222222, 40);
+		circles[2][2] = new Circle(2, 2, 0xff000000, 0xff222222, 40);
+
 	}
 
 	/** 
@@ -43,20 +54,52 @@ public class CircleManager {
 		if (!areNeighbors(c, last) || !areSameColor(c, last))
 			return false;
 		
-		if (!c.isSelected()) {
+		if (!areConnected(c, last)) {
 			c.select();
 			selected.push(c);
+			turnOn(c, last);
 			return true;
 		} else if(selected.size() > 1) {
 			/* Remove a circle */
 			Circle lastMinusOne = selected.get(selected.size() - 2);
 			if (lastMinusOne.equals(c)) {
 				selected.pop();
-				last.unselect();
+				/* last may still be in the stack */
+				if(!selected.contains(last))
+					last.unselect();
+				turnOff(last, lastMinusOne);
 				return true;
 			}
 		}		
 		return false;
+	}
+	
+	private boolean areConnected(Circle c, Circle d) {
+		int cIndex = toGraphIndex(c);
+		int dIndex = toGraphIndex(d);
+		return graph[dIndex][cIndex];
+	}
+	
+	private void turnOn(Circle c, Circle d) {
+		int dIndex = toGraphIndex(d);
+		int cIndex = toGraphIndex(c);
+		setGraph(cIndex, dIndex, true);
+	}
+	
+	private void turnOff(Circle c, Circle d) {
+		int dIndex = toGraphIndex(d);
+		int cIndex = toGraphIndex(c);
+		setGraph(cIndex, dIndex, false);
+	}
+	
+	
+	private void setGraph(int cIndex, int dIndex, boolean value) {
+		graph[dIndex][cIndex] = value;
+		graph[cIndex][dIndex] = value;
+	}
+
+	private int toGraphIndex(Circle c) {
+		return c.getRow() * cols + c.getColumn();
 	}
 	
 	private boolean areSameColor(Circle c, Circle last) {
@@ -103,6 +146,8 @@ public class CircleManager {
 				currentRow--;
 			}
 		}
+		
+		graph = new boolean[rows * cols][rows * cols];
 		selected.clear();
 	}
 
