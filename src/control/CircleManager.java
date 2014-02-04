@@ -1,8 +1,8 @@
 package control;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 import model.Circle;
 
@@ -10,7 +10,7 @@ public class CircleManager {
 
 	private int rows, cols;
 	private Circle circles[][];
-	private List<Circle> selected = new LinkedList<Circle>();
+	private Stack<Circle> selected = new Stack<Circle>();
 	private CircleFactory factory;
 
 	public CircleManager(int rows, int columns) {
@@ -35,7 +35,7 @@ public class CircleManager {
 		Circle c = circles[row][col];
 		if(selected.isEmpty()) {
 			c.select();
-			selected.add(c);
+			selected.push(c);
 			return true;
 		}
 		
@@ -45,13 +45,13 @@ public class CircleManager {
 		
 		if (!c.isSelected()) {
 			c.select();
-			selected.add(c);
+			selected.push(c);
 			return true;
 		} else if(selected.size() > 1) {
 			/* Remove a circle */
 			Circle lastMinusOne = selected.get(selected.size() - 2);
 			if (lastMinusOne.equals(c)) {
-				selected.remove(last);
+				selected.pop();
 				last.unselect();
 				return true;
 			}
@@ -69,8 +69,7 @@ public class CircleManager {
 		 * and return.
 		 */
 		if (selected.size() == 1) {
-			selected.get(0).unselect();
-			selected.clear();
+			selected.pop().unselect();
 			return;
 		}
 
@@ -121,7 +120,7 @@ public class CircleManager {
 	public Circle lastSelectedCircle() {
 		if (selected.isEmpty())
 			return null;
-		return selected.get(selected.size() - 1);
+		return selected.peek();
 	}
 	
 	private boolean inValidRowAndCol(int row, int col) {
