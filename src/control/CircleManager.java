@@ -24,24 +24,45 @@ public class CircleManager {
 				circles[row][col] = factory.newCircle(row, col);
 	}
 
-	public void select(int row, int col) {
+	/** 
+	 * Acts on (row, col) by either adding the target circle or removing it.
+	 * Returns whether the action did something.
+	 */
+	public boolean actionAt(int row, int col) {
 		if(inValidRowAndCol(row, col))
-			return;
+			return false;
 		
 		Circle c = circles[row][col];
-		if(!hasSelection()) {
+		if(selected.isEmpty()) {
 			c.select();
 			selected.add(c);
-		} else {
-			Circle last = lastSelectedCircle();
-			if (!c.isSelected() && areNeighbors(c, last) 
-					&& c.getFill() == last.getFill()) {
-				c.select();
-				selected.add(c);
-			}
+			return true;
 		}
+		
+		Circle last = lastSelectedCircle();
+		if (!areNeighbors(c, last) || !areSameColor(c, last))
+			return false;
+		
+		if (!c.isSelected()) {
+			c.select();
+			selected.add(c);
+			return true;
+		} else if(selected.size() > 1) {
+			/* Remove a circle */
+			Circle lastMinusOne = selected.get(selected.size() - 2);
+			if (lastMinusOne.equals(c)) {
+				selected.remove(last);
+				last.unselect();
+				return true;
+			}
+		}		
+		return false;
 	}
 	
+	private boolean areSameColor(Circle c, Circle last) {
+		return c.getFill() == last.getFill();
+	}
+
 	public void flush() {
 		/* 
 		 * Only one selected circle is not enough to be flushed, so unselect it

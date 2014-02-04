@@ -65,7 +65,7 @@ public class Main extends PApplet {
 		int row = mouseToRow();
 		int col = mouseToCol();
 		if(mouseInside(circleManager.getCircle(row, col)))
-			circleManager.select(row, col);
+			circleManager.actionAt(row, col);
 	}
 
 	public void mouseDragged() {
@@ -74,7 +74,7 @@ public class Main extends PApplet {
 		int row = mouseToRow();
 		int col = mouseToCol();
 		if(mouseInside(circleManager.getCircle(row, col)))
-			circleManager.select(row, col);
+			circleManager.actionAt(row, col);
 	}
 	
 	public void mouseReleased() { circleManager.flush();}
