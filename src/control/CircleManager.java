@@ -115,12 +115,35 @@ public class CircleManager {
 			selected.pop().unselect();
 			return;
 		}
-
-		/* Clear those circles that have been selected */
-		for (Circle b: selected) {
-			int col = b.getColumn();
-			int row = b.getRow();
-			circles[row][col] = null;
+		
+		/* check the presence of a cycle */
+		boolean cycle = false;
+		int count [] = new int[rows * cols];
+		for (Circle c: selected) {
+			int index = toGraphIndex(c);
+			count[index]++;
+			if(count[index] > 1) {
+				cycle = true;
+				break;
+			}
+		}
+		
+		if (cycle) {
+			/* removes all circles of the same color of the selected ones */
+			int color = selected.peek().getFill();
+			for (int i = 0; i < rows * cols; i++) {
+				int row = i / rows;
+				int col = i % cols;
+				if (circles[row][col].getFill() == color)
+					circles[row][col] = null;
+			}
+		} else {
+			/* Clear those circles that have been selected */
+			for (Circle b: selected) {
+				int col = b.getColumn();
+				int row = b.getRow();
+				circles[row][col] = null;
+			}
 		}
 
 		/* Dropping circles */
