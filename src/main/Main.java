@@ -96,25 +96,29 @@ public class Main extends PApplet {
 		popMatrix();
 	}
 
-	float getX(Circle c) {
+	private float getX(Circle c) {
 		int cellW = SCREEN_WIDTH / COLUMNS;
 		return c.getColumn() * cellW + cellW/2; 
 	}
 	
-	float getY(Circle c) {
+	private float getY(Circle c) {
 		int cellH = SCREEN_HEIGHT / ROWS;
 		return c.getRow() * cellH + cellH/2; 
 	}
 	
 	private int mouseToRow() {
-		return (int) (mouseY / (SCREEN_HEIGHT / ROWS)); 
+		int row = (int) (mouseY / (SCREEN_HEIGHT / ROWS));
+		return constrain(row, 0, ROWS); 
 	}
 	
 	private int mouseToCol() {
-		return (int) (mouseX / (SCREEN_WIDTH / COLUMNS));
+		int col = (int) (mouseX / (SCREEN_WIDTH / COLUMNS));
+		return constrain(col, 0, COLUMNS);
 	}
 
 	private boolean mouseInside(Circle c) {
+		if (c == null)
+			return false;
 		PVector center = new PVector(getX(c), getY(c));
 		PVector mouse = new PVector(mouseX, mouseY);
 		return PVector.sub(center, mouse).mag() <= c.getDiameter() / 2;
