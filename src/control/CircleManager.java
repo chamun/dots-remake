@@ -107,6 +107,11 @@ public class CircleManager {
 	}
 
 	public void flush() {
+		
+		/* Nothing to be flushed */
+		if (selected.size() == 0)
+			return;
+		
 		/* 
 		 * Only one selected circle is not enough to be flushed, so unselect it
 		 * and return.
@@ -115,6 +120,8 @@ public class CircleManager {
 			selected.pop().unselect();
 			return;
 		}
+		
+		int color = selected.peek().getFill();
 		
 		/* check the presence of a cycle */
 		boolean cycle = false;
@@ -130,7 +137,6 @@ public class CircleManager {
 		
 		if (cycle) {
 			/* removes all circles of the same color of the selected ones */
-			int color = selected.peek().getFill();
 			for (int i = 0; i < rows * cols; i++) {
 				int row = i / rows;
 				int col = i % cols;
@@ -155,7 +161,7 @@ public class CircleManager {
 					column.add(circles[j][col]);
 			}
 			
-			/* And drop them */
+			/* And stack them on the bottom of the column */
 			int currentRow = rows - 1;
 			for (int j = 0; j < column.size(); j++) {
 				circles[currentRow][col] = column.get(j);
@@ -163,14 +169,22 @@ public class CircleManager {
 				currentRow--;
 			}
 			
-			/* Create new circles to go above the ones that were dropped */
+			/* Create new circles to go above the ones that were stacked */
 			while (currentRow >= 0) {
-				circles[currentRow][col] = factory.newCircle(currentRow, col);
+				do {
+					circles[currentRow][col] = factory.newCircle(currentRow, col);
+					/* If we just removed all circles of the same color from 
+					 * the board, we will not create any new circle with that 
+					 * color.
+					 */
+				} while (cycle && circles[currentRow][col].getFill() == color);
 				currentRow--;
 			}
 		}
 		
-		graph = new boolean[rows * cols][rows * cols];
+		for (int row = 0; row < graph.length; row++)
+			for (int col = 0; col < graph[0].length; col++)
+				graph[row][col] = false;
 		selected.clear();
 	}
 
