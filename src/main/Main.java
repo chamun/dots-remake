@@ -1,8 +1,11 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import model.Animation;
 import model.Circle;
+import model.Fade;
 import processing.core.PApplet;
 import processing.core.PVector;
 import control.CircleManager;
@@ -25,6 +28,7 @@ public class Main extends PApplet {
 	public static int BALLDIAMETER = SCREEN_WIDTH / ROWS / 2;
 
 	private CircleManager circleManager = new CircleManager(ROWS, COLUMNS);
+	private List<Animation> animations = new ArrayList<Animation>();
 
 	public static void main(final String args[]) {
 		PApplet.main(new String[] {"--bgcolor=#DFDFDF", PACKAGENAME+"."+CLASSNAME });
@@ -40,6 +44,10 @@ public class Main extends PApplet {
 	public void draw() {
 		background(BACKGROUND_COLOR);
 
+		for (int i = animations.size() - 1; i >= 0; i--)
+			if (animations.get(i).isFinished())
+				animations.remove(i);
+		
 		Circle last = circleManager.lastSelectedCircle();
 		if (last != null) {
 			strokeWeight(2);
@@ -55,32 +63,42 @@ public class Main extends PApplet {
 			stroke(b.getBorder());
 			line(getX(a), getY(a), getX(b), getY(b));
 		}
+		
+		for(Animation a: animations)
+			a.draw(this);
 
 		for (int row = 0; row < ROWS; row++)
 			for (int col = 0; col < COLUMNS; col++)
-				drawCircle(circleManager.getCircle(row, col));;
+				drawCircle(circleManager.getCircle(row, col));
+		
+		for(Animation a: animations)
+			a.step();
 	}
 
-	public void mousePressed() {
-		int row = mouseToRow();
-		int col = mouseToCol();
-		if(mouseInside(circleManager.getCircle(row, col)))
-			circleManager.actionAt(row, col);
-	}
+	public void mousePressed() { action(); }
 
 	public void mouseDragged() {
 		if (!circleManager.hasSelection())
 			return;
-		int row = mouseToRow();
-		int col = mouseToCol();
-		if(mouseInside(circleManager.getCircle(row, col)))
-			circleManager.actionAt(row, col);
+		action();
 	}
 	
 	public void mouseReleased() { circleManager.flush();}
 	
 	/* Not Processing methods */
 
+	private void action() {
+		int row = mouseToRow();
+		int col = mouseToCol();
+		Circle c = circleManager.getCircle(row, col);
+		if(mouseInside(c)) {
+			if(circleManager.actionAt(row, col)) {
+				animations.add(new Fade(getX(c), getY(c), 
+						c.getBorder(), BALLDIAMETER + 20));
+			}
+		}
+	}
+	
 	private void drawCircle(Circle b) {
 		if (b == null)
 			return;
