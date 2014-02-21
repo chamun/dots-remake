@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import model.AnimationHandler;
 import model.Circle;
 
 public class CircleManager {
@@ -13,6 +14,7 @@ public class CircleManager {
 	private Stack<Circle> selected = new Stack<Circle>();
 	private boolean graph [][];
 	private CircleFactory factory;
+	private AnimationHandler animationHandler;
 
 	public CircleManager(int rows, int columns) {
 		this.rows = rows;
@@ -58,6 +60,7 @@ public class CircleManager {
 			c.select();
 			selected.push(c);
 			turnOn(c, last);
+			checkCycleAndNotify();
 			return true;
 		} else if(selected.size() > 1) {
 			/* Remove a circle */
@@ -74,6 +77,21 @@ public class CircleManager {
 		return false;
 	}
 	
+	private void checkCycleAndNotify() {
+		if (animationHandler == null)
+			return;
+		if(!hasCycle())
+			return;
+		int color = selected.peek().getFill();
+		for (int row = 0; row < rows; row++)
+			for (int col = 0; col < cols; col++) {
+				Circle c = circles[row][col];
+				if (c.getFill() == color) {
+					animationHandler.newFadeAnimation(c);
+				}
+			}
+	}
+
 	private boolean areConnected(Circle c, Circle d) {
 		int cIndex = toGraphIndex(c);
 		int dIndex = toGraphIndex(d);
@@ -124,16 +142,7 @@ public class CircleManager {
 		int color = selected.peek().getFill();
 		
 		/* check the presence of a cycle */
-		boolean cycle = false;
-		int count [] = new int[rows * cols];
-		for (Circle c: selected) {
-			int index = toGraphIndex(c);
-			count[index]++;
-			if(count[index] > 1) {
-				cycle = true;
-				break;
-			}
-		}
+		boolean cycle = hasCycle();
 		
 		if (cycle) {
 			/* removes all circles of the same color of the selected ones */
@@ -186,6 +195,21 @@ public class CircleManager {
 			for (int col = 0; col < graph[0].length; col++)
 				graph[row][col] = false;
 		selected.clear();
+	}
+	
+	private boolean hasCycle() {
+		int count [] = new int[rows * cols];
+		for (Circle c: selected) {
+			int index = toGraphIndex(c);
+			count[index]++;
+			if(count[index] > 1)
+				return true;
+		}
+		return false;
+	}
+
+	public void setAnimationHandler(AnimationHandler animationHandler) {
+		this.animationHandler = animationHandler;
 	}
 
 	public boolean hasSelection() { return !selected.isEmpty(); }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Animation;
+import model.AnimationHandler;
 import model.Circle;
 import model.Fade;
 import processing.core.PApplet;
@@ -12,7 +13,9 @@ import control.CircleManager;
 
 
 @SuppressWarnings("serial")
-public class Main extends PApplet {
+public class Main 
+        extends PApplet
+        implements AnimationHandler {
 
 	/* Configs */
 	private static final String PACKAGENAME = "main";
@@ -39,6 +42,7 @@ public class Main extends PApplet {
 		frameRate(FPS);
 		if (frame != null)
 			frame.setTitle("Dotz");
+		circleManager.setAnimationHandler(this);
 	}
 
 	public void draw() {
@@ -91,12 +95,8 @@ public class Main extends PApplet {
 		int row = mouseToRow();
 		int col = mouseToCol();
 		Circle c = circleManager.getCircle(row, col);
-		if(mouseInside(c)) {
-			if(circleManager.actionAt(row, col)) {
-				animations.add(new Fade(getX(c), getY(c), 
-						c.getBorder(), BALLDIAMETER + 20));
-			}
-		}
+		if(mouseInside(c) && circleManager.actionAt(row, col))
+			newFadeAnimation(c);
 	}
 	
 	private void drawCircle(Circle b) {
@@ -140,5 +140,11 @@ public class Main extends PApplet {
 		PVector center = new PVector(getX(c), getY(c));
 		PVector mouse = new PVector(mouseX, mouseY);
 		return PVector.sub(center, mouse).mag() <= c.getDiameter() / 2;
+	}
+
+	@Override
+	public void newFadeAnimation(Circle c) {
+		animations.add(
+				new Fade(getX(c), getY(c), c.getBorder(), BALLDIAMETER + 20));
 	}
 }
