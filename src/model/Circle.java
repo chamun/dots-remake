@@ -1,5 +1,7 @@
 package model;
 
+import processing.core.PApplet;
+
 public class Circle {
 	private int row, column;
 	private int fill, border;
@@ -27,4 +29,17 @@ public class Circle {
 	public void select() { selected = true; }
 	public void unselect() { selected = false; }
 	public void setRow(int row) { this.row = row; }
+	
+	public void display(PApplet p) {
+		p.pushMatrix();
+		p.noStroke();
+		if (isSelected()) {
+			p.strokeWeight(4);
+			p.stroke(getBorder());
+		}
+		
+		p.fill(getFill());
+		p.ellipse (0, 0, getDiameter(), getDiameter());
+		p.popMatrix();
+	}
 }

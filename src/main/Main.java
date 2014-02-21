@@ -103,14 +103,8 @@ public class Main
 		if (b == null)
 			return;
 		pushMatrix();
-		noStroke();
-		if (b.isSelected()) {
-			strokeWeight(4);
-			stroke(b.getBorder());
-		}
-		
-		fill(b.getFill());
-		ellipse (getX(b), getY(b), b.getDiameter(), b.getDiameter());
+		translate(getX(b), getY(b));
+		b.display(this);
 		popMatrix();
 	}
 
