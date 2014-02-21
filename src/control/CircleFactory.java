@@ -32,7 +32,7 @@ public class CircleFactory {
 		};
 		
 		int border[]   = { 
-				0xffaf0000, 0xff00af00, 0xff0000af, 0xff00afff, 0xffafff00
+				0xffaf0000, 0xff00af00, 0xff0000af, 0xff00afff, 0xffffaf00
 		};
 		
 		int ret[] = {
