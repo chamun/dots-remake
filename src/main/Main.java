@@ -7,6 +7,7 @@ import model.Animation;
 import model.AnimationHandler;
 import model.Circle;
 import model.Fade;
+import model.FallingCircleAnimation;
 import processing.core.PApplet;
 import processing.core.PVector;
 import control.CircleManager;
@@ -26,9 +27,9 @@ public class Main
 	private static final int BACKGROUND_COLOR = 0xffffffff;
 	private static final int FPS = 30;
 
-	public static int COLUMNS = 6;
-	public static int ROWS = 6;
-	public static int BALLDIAMETER = SCREEN_WIDTH / ROWS / 2;
+	public static final int COLUMNS = 6;
+	public static final int ROWS = 6;
+	public static final int BALLDIAMETER = SCREEN_WIDTH / ROWS / 2;
 
 	private CircleManager circleManager = new CircleManager(ROWS, COLUMNS);
 	private List<Animation> animations = new ArrayList<Animation>();
@@ -74,7 +75,7 @@ public class Main
 		for (int row = 0; row < ROWS; row++)
 			for (int col = 0; col < COLUMNS; col++)
 				drawCircle(circleManager.getCircle(row, col));
-		
+				
 		for(Animation a: animations)
 			a.step();
 	}
@@ -100,7 +101,7 @@ public class Main
 	}
 	
 	private void drawCircle(Circle b) {
-		if (b == null)
+		if (b == null || !b.isActive())
 			return;
 		pushMatrix();
 		translate(getX(b), getY(b));
@@ -109,13 +110,21 @@ public class Main
 	}
 
 	private float getX(Circle c) {
-		int cellW = SCREEN_WIDTH / COLUMNS;
-		return c.getColumn() * cellW + cellW/2; 
+		return columnToX(c.getColumn()); 
 	}
 	
 	private float getY(Circle c) {
+		return rowToY(c.getRow());
+	}
+	
+	private float columnToX(float column) {
+		int cellW = SCREEN_WIDTH / COLUMNS;
+		return column * cellW + cellW/2;
+	}
+	
+	private float rowToY(float row) {
 		int cellH = SCREEN_HEIGHT / ROWS;
-		return c.getRow() * cellH + cellH/2; 
+		return row * cellH + cellH/2; 
 	}
 	
 	private int mouseToRow() {
@@ -140,5 +149,14 @@ public class Main
 	public void newFadeAnimation(Circle c) {
 		animations.add(
 				new Fade(getX(c), getY(c), c.getBorder(), BALLDIAMETER + 20));
+	}
+
+	@Override
+	public void newFallingAnimation(int column, int currentRow, int newRow, Circle circle) {
+		float y = rowToY(currentRow);
+		float newY = rowToY(newRow);
+		float x = columnToX(column);
+		Animation a = new FallingCircleAnimation(x, y, newY, circle);
+		animations.add(a);
 	}
 }

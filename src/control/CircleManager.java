@@ -172,9 +172,11 @@ public class CircleManager {
 			
 			/* And stack them on the bottom of the column */
 			int currentRow = rows - 1;
-			for (int j = 0; j < column.size(); j++) {
-				circles[currentRow][col] = column.get(j);
-				circles[currentRow][col].setRow(currentRow); 
+			for (Circle c: column) {
+				animationHandler.newFallingAnimation(c.getColumn(), 
+						c.getRow(), currentRow, c);
+				circles[currentRow][col] = c;
+				circles[currentRow][col].setRow(currentRow);
 				currentRow--;
 			}
 			
@@ -187,6 +189,9 @@ public class CircleManager {
 					 * color.
 					 */
 				} while (cycle && circles[currentRow][col].getFill() == color);
+				Circle c = circles[currentRow][col];
+				animationHandler.newFallingAnimation(c.getColumn(), 
+						currentRow - rows, currentRow, c);
 				currentRow--;
 			}
 		}
