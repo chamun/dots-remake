@@ -165,43 +165,57 @@ public class CircleManager {
 		for (int col = 0; col < cols; col++) {
 			/* Collect every non-null circle from the current column */
 			List<Circle> column = new ArrayList<Circle>(rows);
-			for (int j = rows - 1; j >= 0; j--) {
-				if (circles[j][col] != null)
-					column.add(circles[j][col]);
+			for (int row = rows - 1; row >= 0; row--) {
+				if (circles[row][col] != null)
+					column.add(circles[row][col]);
 			}
 			
 			/* And stack them on the bottom of the column */
 			int currentRow = rows - 1;
 			for (Circle c: column) {
-				animationHandler.newFallingAnimation(c.getColumn(), 
-						c.getRow(), currentRow, c);
-				circles[currentRow][col] = c;
-				circles[currentRow][col].setRow(currentRow);
+				setCircleNewRow(c, currentRow);
 				currentRow--;
 			}
 			
 			/* Create new circles to go above the ones that were stacked */
-			while (currentRow >= 0) {
-				do {
-					circles[currentRow][col] = factory.newCircle(currentRow, col);
-					/* If we just removed all circles of the same color from 
-					 * the board, we will not create any new circle with that 
-					 * color.
-					 */
-				} while (cycle && circles[currentRow][col].getFill() == color);
-				Circle c = circles[currentRow][col];
-				animationHandler.newFallingAnimation(c.getColumn(), 
-						currentRow - rows, currentRow, c);
-				currentRow--;
-			}
+			fillVoidCells(col, currentRow, cycle, color);
 		}
 		
+		/* Cleanup state */
 		for (int row = 0; row < graph.length; row++)
 			for (int col = 0; col < graph[0].length; col++)
 				graph[row][col] = false;
 		selected.clear();
 	}
 	
+	private void fillVoidCells(int col, int startingRow, 
+			boolean cycle, int color) {
+		
+		int currentRow = startingRow;
+		while (currentRow >= 0) {
+			do {
+				circles[currentRow][col] = factory.newCircle(currentRow, col);
+				/* If we just removed all circles of the same color from 
+				 * the board, we will not create any new circle with that 
+				 * color.
+				 */
+			} while (cycle && circles[currentRow][col].getFill() == color);
+			Circle c = circles[currentRow][col];
+			animationHandler.newFallingAnimation(c.getColumn(), 
+					currentRow - rows, currentRow, c);
+			currentRow--;
+		}
+	}
+
+	private void setCircleNewRow(Circle c, int newRow) {
+		if (animationHandler != null)
+			animationHandler.newFallingAnimation(
+					c.getColumn(), c.getRow(), newRow, c);
+		
+		circles[newRow][c.getColumn()] = c;
+		c.setRow(newRow);
+	}
+
 	private boolean hasCycle() {
 		int count [] = new int[rows * cols];
 		for (Circle c: selected) {
