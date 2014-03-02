@@ -8,6 +8,7 @@ import model.AnimationHandler;
 import model.Circle;
 import model.FadeAnimation;
 import model.MoveAndBounceAnimation;
+import model.ShrinkAnimation;
 import processing.core.PApplet;
 import processing.core.PVector;
 import control.CircleManager;
@@ -157,6 +158,14 @@ public class Main
 		float newY = rowToY(newRow);
 		float x = columnToX(column);
 		Animation a = new MoveAndBounceAnimation(x, y, x, newY, circle);
+		animations.add(a);
+	}
+
+	@Override
+	public void newShrinkAnimation(Circle c) {
+		float x = columnToX(c.getColumn());
+		float y = rowToY(c.getRow());
+		Animation a = new ShrinkAnimation(x, y, c);
 		animations.add(a);
 	}
 }

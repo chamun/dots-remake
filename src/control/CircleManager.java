@@ -150,14 +150,14 @@ public class CircleManager {
 				int row = i / rows;
 				int col = i % cols;
 				if (circles[row][col].getFill() == color)
-					circles[row][col] = null;
+					remove(row, col);
 			}
 		} else {
 			/* Clear those circles that have been selected */
 			for (Circle b: selected) {
 				int col = b.getColumn();
 				int row = b.getRow();
-				circles[row][col] = null;
+				remove(row, col);
 			}
 		}
 
@@ -188,6 +188,11 @@ public class CircleManager {
 		selected.clear();
 	}
 	
+	private void remove(int row, int col) {
+		animationHandler.newShrinkAnimation(circles[row][col]);
+		circles[row][col] = null;
+	}
+
 	private void fillVoidCells(int col, int startingRow, 
 			boolean cycle, int color) {
 		
