@@ -7,7 +7,7 @@ import model.Animation;
 import model.AnimationHandler;
 import model.Circle;
 import model.FadeAnimation;
-import model.FallingCircleAnimation;
+import model.MoveAndBounceAnimation;
 import processing.core.PApplet;
 import processing.core.PVector;
 import control.CircleManager;
@@ -156,7 +156,7 @@ public class Main
 		float y = rowToY(currentRow);
 		float newY = rowToY(newRow);
 		float x = columnToX(column);
-		Animation a = new FallingCircleAnimation(x, y, newY, circle);
+		Animation a = new MoveAndBounceAnimation(x, y, x, newY, circle);
 		animations.add(a);
 	}
 }

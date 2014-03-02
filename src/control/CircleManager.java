@@ -192,6 +192,7 @@ public class CircleManager {
 			boolean cycle, int color) {
 		
 		int currentRow = startingRow;
+		int fallFrom = -1;
 		while (currentRow >= 0) {
 			do {
 				circles[currentRow][col] = factory.newCircle(currentRow, col);
@@ -202,8 +203,9 @@ public class CircleManager {
 			} while (cycle && circles[currentRow][col].getFill() == color);
 			Circle c = circles[currentRow][col];
 			animationHandler.newFallingAnimation(c.getColumn(), 
-					currentRow - rows, currentRow, c);
+					fallFrom, currentRow, c);
 			currentRow--;
+			fallFrom--;
 		}
 	}
 
