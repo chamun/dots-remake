@@ -27,13 +27,13 @@ public class CircleManager {
 			for (int col = 0; col < cols; col++)
 				circles[row][col] = factory.newCircle(row, col);
 		
-		circles[0][0] = new Circle(0, 0, 0xff000000, 0xff222222, 40);
-		circles[1][0] = new Circle(1, 0, 0xff000000, 0xff222222, 40);
-		circles[0][1] = new Circle(0, 1, 0xff000000, 0xff222222, 40);
-		circles[1][1] = new Circle(1, 1, 0xff000000, 0xff222222, 40);
-		circles[2][1] = new Circle(2, 1, 0xff000000, 0xff222222, 40);
-		circles[1][2] = new Circle(1, 2, 0xff000000, 0xff222222, 40);
-		circles[2][2] = new Circle(2, 2, 0xff000000, 0xff222222, 40);
+		circles[0][0] = new Circle(0, 0, 0xff000000, 40);
+		circles[1][0] = new Circle(1, 0, 0xff000000, 40);
+		circles[0][1] = new Circle(0, 1, 0xff000000, 40);
+		circles[1][1] = new Circle(1, 1, 0xff000000, 40);
+		circles[2][1] = new Circle(2, 1, 0xff000000, 40);
+		circles[1][2] = new Circle(1, 2, 0xff000000, 40);
+		circles[2][2] = new Circle(2, 2, 0xff000000, 40);
 
 	}
 
@@ -47,7 +47,6 @@ public class CircleManager {
 		
 		Circle c = circles[row][col];
 		if(selected.isEmpty()) {
-			c.select();
 			selected.push(c);
 			return true;
 		}
@@ -57,7 +56,6 @@ public class CircleManager {
 			return false;
 		
 		if (!areConnected(c, last)) {
-			c.select();
 			selected.push(c);
 			turnOn(c, last);
 			checkCycleAndNotify();
@@ -69,7 +67,6 @@ public class CircleManager {
 				selected.pop();
 				/* last may still be in the stack */
 				if(!selected.contains(last))
-					last.unselect();
 				turnOff(last, lastMinusOne);
 				return true;
 			}
@@ -135,7 +132,7 @@ public class CircleManager {
 		 * and return.
 		 */
 		if (selected.size() == 1) {
-			selected.pop().unselect();
+			selected.pop();
 			return;
 		}
 		

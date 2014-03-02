@@ -19,29 +19,18 @@ public class CircleFactory {
 	
 	
 	public Circle newCircle(int row, int col) {
-		int colors[] = randomColor();
-		return new Circle(row, col, colors[0], colors[1], Main.BALLDIAMETER);
+		int color = randomColor();
+		return new Circle(row, col, color, Main.BALLDIAMETER);
 	}
 
 	
-	private int[] randomColor() {
-		Random r = new Random();
-		
+	private int randomColor() {
+		Random r = new Random();	
 		int fill[]   = { 
 				0xffff0000, 0xff00ff00, 0xff0000ff, 0xff00ffff, 0xffffff00
 		};
 		
-		int border[]   = { 
-				0xffaf0000, 0xff00af00, 0xff0000af, 0xff00afff, 0xffffaf00
-		};
-		
-		int ret[] = {
-				0, 0
-		};
-		
 		int n = r.nextInt(fill.length);
-		ret[0] = fill[n];
-		ret[1] = border[n];
-		return ret;
+		return fill[n];
 	}
 }

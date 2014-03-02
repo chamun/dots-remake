@@ -57,7 +57,7 @@ public class Main
 		Circle last = circleManager.lastSelectedCircle();
 		if (last != null) {
 			strokeWeight(2);
-			stroke(last.getBorder());
+			stroke(last.getFill());
 			line(getX(last), getY(last), mouseX, mouseY);
 		}
 
@@ -66,7 +66,7 @@ public class Main
 			Circle a = selected.get(i);
 			Circle b = selected.get(i + 1);
 			strokeWeight(2);
-			stroke(b.getBorder());
+			stroke(b.getFill());
 			line(getX(a), getY(a), getX(b), getY(b));
 		}
 		
@@ -148,8 +148,7 @@ public class Main
 
 	@Override
 	public void newFadeAnimation(Circle c) {
-		animations.add(
-				new FadeAnimation(getX(c), getY(c), c.getBorder(), BALLDIAMETER + 20));
+		animations.add(new FadeAnimation(getX(c), getY(c), c));
 	}
 
 	@Override

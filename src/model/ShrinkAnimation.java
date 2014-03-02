@@ -12,7 +12,6 @@ public class ShrinkAnimation implements Animation {
 		this.x = x;
 		this.y = y;
 		this.c = c;
-		c.unselect();
 	}
 
 	@Override

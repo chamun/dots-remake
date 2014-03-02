@@ -4,17 +4,15 @@ import processing.core.PApplet;
 
 public class FadeAnimation implements Animation {
 
-	private static final int MAX_FRAMES = 15;
-	private int color;
+	private static final int MAX_FRAMES = 20;
 	private float x, y;
-	private int size;
 	private int frames = 0;
+	private Circle c;
 
-	public FadeAnimation(float x, float y, int color, int size) {
+	public FadeAnimation(float x, float y, Circle c) {
 		this.x = x;
 		this.y = y;
-		this.color = color;
-		this.size = size;
+		this.c = c;
 	}
 	
 	@Override
@@ -27,9 +25,22 @@ public class FadeAnimation implements Animation {
 	public void draw(PApplet p) {
 		p.pushMatrix();
 		p.noStroke();
-		p.fill(color, 1 - frames * 255 / MAX_FRAMES);
+		p.fill(c.getFill(), getAlpha());
 		p.translate(x, y);
-		p.ellipse(0, 0, size, size);
+		p.scale(getScale());
+		p.ellipse(0, 0, c.getDiameter(), c.getDiameter());
 		p.popMatrix();
+	}
+
+	private float getScale() {
+		float angle = frames * PApplet.HALF_PI / MAX_FRAMES;
+		float scale = 1.5f *  PApplet.sin(angle);
+		return scale;
+	}
+
+	private int getAlpha() {
+		float angle = frames * PApplet.PI / MAX_FRAMES;
+		float color = 255 * PApplet.sin(angle);
+		return (int) PApplet.map(color, 0, 255, 0, 140);
 	}
 }
