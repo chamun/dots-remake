@@ -6,7 +6,7 @@ import java.util.List;
 import model.Animation;
 import model.AnimationHandler;
 import model.Circle;
-import model.Fade;
+import model.FadeAnimation;
 import model.FallingCircleAnimation;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -148,7 +148,7 @@ public class Main
 	@Override
 	public void newFadeAnimation(Circle c) {
 		animations.add(
-				new Fade(getX(c), getY(c), c.getBorder(), BALLDIAMETER + 20));
+				new FadeAnimation(getX(c), getY(c), c.getBorder(), BALLDIAMETER + 20));
 	}
 
 	@Override

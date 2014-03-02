@@ -2,7 +2,7 @@ package model;
 
 import processing.core.PApplet;
 
-public class Fade implements Animation {
+public class FadeAnimation implements Animation {
 
 	private static final int MAX_FRAMES = 15;
 	private int color;
@@ -10,7 +10,7 @@ public class Fade implements Animation {
 	private int size;
 	private int frames = 0;
 
-	public Fade(float x, float y, int color, int size) {
+	public FadeAnimation(float x, float y, int color, int size) {
 		this.x = x;
 		this.y = y;
 		this.color = color;
