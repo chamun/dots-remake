@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import screen.GameScreen;
 import model.AnimationHandler;
 import model.Circle;
 
@@ -27,13 +28,13 @@ public class CircleManager {
 			for (int col = 0; col < cols; col++)
 				circles[row][col] = factory.newCircle(row, col);
 		
-		circles[0][0] = new Circle(0, 0, 0xff000000, 40);
-		circles[1][0] = new Circle(1, 0, 0xff000000, 40);
-		circles[0][1] = new Circle(0, 1, 0xff000000, 40);
-		circles[1][1] = new Circle(1, 1, 0xff000000, 40);
-		circles[2][1] = new Circle(2, 1, 0xff000000, 40);
-		circles[1][2] = new Circle(1, 2, 0xff000000, 40);
-		circles[2][2] = new Circle(2, 2, 0xff000000, 40);
+		circles[0][0] = new Circle(0, 0, 0xff000000, GameScreen.BALL_DIAMETER);
+		circles[1][0] = new Circle(1, 0, 0xff000000, GameScreen.BALL_DIAMETER);
+		circles[0][1] = new Circle(0, 1, 0xff000000, GameScreen.BALL_DIAMETER);
+		circles[1][1] = new Circle(1, 1, 0xff000000, GameScreen.BALL_DIAMETER);
+		circles[2][1] = new Circle(2, 1, 0xff000000, GameScreen.BALL_DIAMETER);
+		circles[1][2] = new Circle(1, 2, 0xff000000, GameScreen.BALL_DIAMETER);
+		circles[2][2] = new Circle(2, 2, 0xff000000, GameScreen.BALL_DIAMETER);
 
 	}
 
