@@ -21,7 +21,6 @@ public class GameScreen
 	
 	private static final int COLUMNS = 6;
 	private static final int ROWS = 6;
-	private static final int BACKGROUND_COLOR = 0xffffffff;
 	public  static int BALL_DIAMETER; /* FIXME: this should be here */
 	
 	private float x, y, width, height;
@@ -54,7 +53,6 @@ public class GameScreen
 	@Override
 	public void draw() {
 		p.translate(x, y);
-		p.background(BACKGROUND_COLOR);
 
 		for (int i = animations.size() - 1; i >= 0; i--)
 			if (animations.get(i).isFinished())
