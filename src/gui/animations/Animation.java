@@ -1,4 +1,4 @@
-package gui;
+package gui.animations;
 
 import processing.core.PApplet;
 

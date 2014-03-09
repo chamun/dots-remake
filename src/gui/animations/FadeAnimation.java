@@ -1,6 +1,6 @@
-package gui;
+package gui.animations;
 
-import control.Circle;
+import model.Circle;
 import processing.core.PApplet;
 
 public class FadeAnimation implements Animation {

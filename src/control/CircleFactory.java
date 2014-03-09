@@ -2,6 +2,7 @@ package control;
 
 import java.util.Random;
 
+import model.Circle;
 import screen.GameScreen;
 
 public class CircleFactory {
