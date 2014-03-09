@@ -123,11 +123,12 @@ public class CircleManager {
 		return c.getFill() == last.getFill();
 	}
 
-	public void flush() {
+	public int flush() {
+		int flushedCircles = 0;
 		
 		/* Nothing to be flushed */
 		if (selected.size() == 0)
-			return;
+			return flushedCircles;
 		
 		/* 
 		 * Only one selected circle is not enough to be flushed, so unselect it
@@ -135,7 +136,7 @@ public class CircleManager {
 		 */
 		if (selected.size() == 1) {
 			selected.pop();
-			return;
+			return flushedCircles;
 		}
 		
 		int color = selected.peek().getFill();
@@ -148,11 +149,14 @@ public class CircleManager {
 			for (int i = 0; i < rows * cols; i++) {
 				int row = i / rows;
 				int col = i % cols;
-				if (circles[row][col].getFill() == color)
+				if (circles[row][col].getFill() == color) {
+					flushedCircles++;
 					remove(row, col);
+				}
 			}
 		} else {
 			/* Clear those circles that have been selected */
+			flushedCircles = selected.size();
 			for (Circle b: selected) {
 				int col = b.getColumn();
 				int row = b.getRow();
@@ -185,6 +189,8 @@ public class CircleManager {
 			for (int col = 0; col < graph[0].length; col++)
 				graph[row][col] = false;
 		selected.clear();
+		
+		return flushedCircles;
 	}
 	
 	private void remove(int row, int col) {

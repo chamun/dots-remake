@@ -23,8 +23,8 @@ public class GameScreen
 		sb =  new Scoreboard(0, 0, width, 50);
 	}
 
-	public void mousePressed() { cb.action(false); }
-	public void mouseDragged() { cb.action(true); }
+	public void mousePressed() { cb.action(); }
+	public void mouseDragged() { cb.dragAction(); }
 	
 	public void mouseReleased() { 
 		int flushedCircles = cb.flush();

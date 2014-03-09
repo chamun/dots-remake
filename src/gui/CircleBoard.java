@@ -72,10 +72,12 @@ public class CircleBoard
 		p.popMatrix();
 	}
 
-	public void action(boolean dragging) {
-		if (dragging && !circleManager.hasSelection())
-			return;
-		
+	public void dragAction() {
+		if (circleManager.hasSelection())
+			action();
+	}
+	
+	public void action() {
 		int row = mouseToRow();
 		int col = mouseToCol();
 		Circle c = circleManager.getCircle(row, col);
@@ -83,11 +85,7 @@ public class CircleBoard
 			newFadeAnimation(c);
 	}
 	
-	public int flush() {
-		circleManager.flush();
-		/* FIXME: return the right value */
-		return 0;
-	}
+	public int flush() { return circleManager.flush(); }
 	
 	@Override
 	public void newFadeAnimation(Circle c) {
@@ -95,7 +93,8 @@ public class CircleBoard
 	}
 
 	@Override
-	public void newFallingAnimation(int column, int currentRow, int newRow, Circle circle) {
+	public void newFallingAnimation(int column, int currentRow, 
+			int newRow, Circle circle) {
 		float y = rowToY(currentRow);
 		float newY = rowToY(newRow);
 		float x = columnToX(column);
