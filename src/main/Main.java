@@ -34,6 +34,8 @@ public class Main
 		if (frame != null)
 			frame.setTitle("Dotz");
 		
+		MouseInputManager.init(this);		
+		
 		// screens.push(new MenuScreen(this, this));
 		startGame();
 	}

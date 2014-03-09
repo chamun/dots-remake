@@ -3,18 +3,21 @@ package screen;
 import java.util.ArrayList;
 import java.util.List;
 
+import main.MouseInputManager;
 import model.Animation;
 import model.AnimationHandler;
 import model.Circle;
 import model.FadeAnimation;
 import model.MoveAndBounceAnimation;
+import model.Rectangle;
 import model.ShrinkAnimation;
-import control.CircleManager;
 import processing.core.PApplet;
 import processing.core.PVector;
+import control.CircleManager;
 
 
-public class GameScreen 
+public class GameScreen
+		extends Rectangle
         implements Screen, AnimationHandler {
 	
 	private PApplet p;
@@ -22,19 +25,15 @@ public class GameScreen
 	private static final int COLUMNS = 6;
 	private static final int ROWS = 6;
 	public  static int BALL_DIAMETER; /* FIXME: this should be here */
-	
-	private float x, y, width, height;
-	
+		
 	private CircleManager circleManager;
 	private List<Animation> animations = new ArrayList<Animation>();
 	
 	public GameScreen(PApplet p, float x, float y, 
 			float width, float height) {
+		super(x, y, width, height);
+		
 		this.p = p;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
 		BALL_DIAMETER = (int) width / ROWS / 2;
 		circleManager = new CircleManager(ROWS, COLUMNS);
 		circleManager.setAnimationHandler(this);
@@ -52,8 +51,7 @@ public class GameScreen
 
 	@Override
 	public void draw() {
-		p.translate(x, y);
-
+		
 		for (int i = animations.size() - 1; i >= 0; i--)
 			if (animations.get(i).isFinished())
 				animations.remove(i);
@@ -113,22 +111,22 @@ public class GameScreen
 	}
 	
 	private float columnToX(float column) {
-		float cellW = width / COLUMNS;
+		float cellW = getWidth() / COLUMNS;
 		return column * cellW + cellW/2;
 	}
 	
 	private float rowToY(float row) {
-		float cellH = height / ROWS;
+		float cellH = getHeight() / ROWS;
 		return row * cellH + cellH/2; 
 	}
 	
 	private int mouseToRow() {
-		int row = (int) (getMouseY() / (height / ROWS));
+		int row = (int) (getMouseY() / (getHeight() / ROWS));
 		return PApplet.constrain(row, 0, ROWS); 
 	}
 	
 	private int mouseToCol() {
-		int col = (int) (getMouseX() / (width / COLUMNS));
+		int col = (int) (getMouseX() / (getWidth() / COLUMNS));
 		return PApplet.constrain(col, 0, COLUMNS);
 	}
 
@@ -162,8 +160,13 @@ public class GameScreen
 		animations.add(a);
 	}
 	
-	private float getMouseX() { return p.mouseX - x; }
-	private float getMouseY() { return p.mouseY - y; }
+	private float getMouseX() { 
+		return MouseInputManager.instance().getOCSx(this); 
+	}
+	
+	private float getMouseY() {
+		return MouseInputManager.instance().getOCSy(this);
+	}
 
 	
 }
