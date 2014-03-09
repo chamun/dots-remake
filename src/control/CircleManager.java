@@ -1,12 +1,12 @@
 package control;
 
+import gui.AnimationHandler;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
 import screen.GameScreen;
-import model.AnimationHandler;
-import model.Circle;
 
 public class CircleManager {
 

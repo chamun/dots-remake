@@ -1,4 +1,6 @@
-package model;
+package gui;
+
+import control.Circle;
 
 public interface AnimationHandler {
 

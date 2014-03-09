@@ -1,14 +1,16 @@
 package screen;
 
+import gui.Animation;
+import gui.AnimationHandler;
+import gui.FadeAnimation;
+import gui.MoveAndBounceAnimation;
+import gui.Scoreboard;
+import gui.ShrinkAnimation;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Animation;
-import model.AnimationHandler;
-import model.Circle;
-import model.FadeAnimation;
-import model.MoveAndBounceAnimation;
-import model.ShrinkAnimation;
+import control.Circle;
 import control.CircleManager;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -27,6 +29,7 @@ public class GameScreen
 	
 	private CircleManager circleManager;
 	private List<Animation> animations = new ArrayList<Animation>();
+	private Scoreboard sb;
 	
 	public GameScreen(PApplet p, float x, float y, 
 			float width, float height) {
@@ -37,6 +40,7 @@ public class GameScreen
 		this.height = height;
 		BALL_DIAMETER = (int) width / ROWS / 2;
 		circleManager = new CircleManager(ROWS, COLUMNS);
+		sb =  new Scoreboard(0, 0, width, 50);
 		circleManager.setAnimationHandler(this);
 	}
 
@@ -83,6 +87,8 @@ public class GameScreen
 				
 		for(Animation a: animations)
 			a.step();
+		
+		sb.draw(p);
 	}
 	
 	/* Not Processing methods */

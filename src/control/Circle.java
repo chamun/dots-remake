@@ -1,4 +1,4 @@
-package model;
+package control;
 
 import processing.core.PApplet;
 

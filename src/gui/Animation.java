@@ -1,4 +1,4 @@
-package model;
+package gui;
 
 import processing.core.PApplet;
 
