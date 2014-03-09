@@ -17,6 +17,8 @@ public class CircleManager {
 	private boolean graph [][];
 	private CircleFactory factory;
 	private AnimationHandler animationHandler;
+	
+	private boolean hasCycle = false;
 
 	public CircleManager(int rows, int columns) {
 		this.rows = rows;
@@ -59,7 +61,7 @@ public class CircleManager {
 		
 		if (!areConnected(c, last)) {
 			selected.push(c);
-			turnOn(c, last);
+			setConnected(c, last, true);
 			checkCycleAndNotify();
 			return true;
 		} else if(selected.size() > 1) {
@@ -67,7 +69,8 @@ public class CircleManager {
 			Circle lastMinusOne = selected.get(selected.size() - 2);
 			if (lastMinusOne.equals(c)) {
 				selected.pop();
-				turnOff(last, lastMinusOne);
+				setConnected(last, lastMinusOne, false);
+				hasCycle = hasCycle();
 				return true;
 			}
 		}		
@@ -75,18 +78,16 @@ public class CircleManager {
 	}
 	
 	private void checkCycleAndNotify() {
-		if (animationHandler == null)
-			return;
-		if(!hasCycle())
-			return;
-		int color = selected.peek().getFill();
-		for (int row = 0; row < rows; row++)
-			for (int col = 0; col < cols; col++) {
-				Circle c = circles[row][col];
-				if (c.getFill() == color) {
+		boolean cycle = hasCycle();
+		if (cycle && !hasCycle && animationHandler != null) {
+			int color = selected.peek().getFill();
+			for (int i = 0; i < rows * cols; i++) {
+				Circle c = circles[i / rows][i % cols];
+				if (c.getFill() == color)
 					animationHandler.newFadeAnimation(c);
-				}
 			}
+		}
+		hasCycle = cycle;
 	}
 
 	private boolean areConnected(Circle c, Circle d) {
@@ -95,20 +96,9 @@ public class CircleManager {
 		return graph[dIndex][cIndex];
 	}
 	
-	private void turnOn(Circle c, Circle d) {
-		int dIndex = toGraphIndex(d);
+	private void setConnected(Circle c, Circle d, boolean value) {
 		int cIndex = toGraphIndex(c);
-		setGraph(cIndex, dIndex, true);
-	}
-	
-	private void turnOff(Circle c, Circle d) {
 		int dIndex = toGraphIndex(d);
-		int cIndex = toGraphIndex(c);
-		setGraph(cIndex, dIndex, false);
-	}
-	
-	
-	private void setGraph(int cIndex, int dIndex, boolean value) {
 		graph[dIndex][cIndex] = value;
 		graph[cIndex][dIndex] = value;
 	}
@@ -138,11 +128,8 @@ public class CircleManager {
 		}
 		
 		int color = selected.peek().getFill();
-		
-		/* check the presence of a cycle */
-		boolean cycle = hasCycle();
-		
-		if (cycle) {
+			
+		if (hasCycle) {
 			/* removes all circles of the same color of the selected ones */
 			for (int i = 0; i < rows * cols; i++) {
 				int row = i / rows;
@@ -179,7 +166,7 @@ public class CircleManager {
 			}
 			
 			/* Create new circles to go above the ones that were stacked */
-			fillVoidCells(col, currentRow, cycle, color);
+			fillVoidCells(col, currentRow, color);
 		}
 		
 		/* Cleanup state */
@@ -187,6 +174,7 @@ public class CircleManager {
 			for (int col = 0; col < graph[0].length; col++)
 				graph[row][col] = false;
 		selected.clear();
+		hasCycle = false;
 		
 		return flushedCircles;
 	}
@@ -196,8 +184,7 @@ public class CircleManager {
 		circles[row][col] = null;
 	}
 
-	private void fillVoidCells(int col, int startingRow, 
-			boolean cycle, int color) {
+	private void fillVoidCells(int col, int startingRow, int color) {
 		
 		int currentRow = startingRow;
 		int fallFrom = -1;
@@ -208,7 +195,7 @@ public class CircleManager {
 				 * the board, we will not create any new circle with that 
 				 * color.
 				 */
-			} while (cycle && circles[currentRow][col].getFill() == color);
+			} while (hasCycle && circles[currentRow][col].getFill() == color);
 			Circle c = circles[currentRow][col];
 			animationHandler.newFallingAnimation(c.getColumn(), 
 					fallFrom, currentRow, c);
