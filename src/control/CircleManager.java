@@ -67,8 +67,6 @@ public class CircleManager {
 			Circle lastMinusOne = selected.get(selected.size() - 2);
 			if (lastMinusOne.equals(c)) {
 				selected.pop();
-				/* last may still be in the stack */
-				if(!selected.contains(last))
 				turnOff(last, lastMinusOne);
 				return true;
 			}
