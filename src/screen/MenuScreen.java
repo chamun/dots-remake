@@ -1,5 +1,6 @@
 package screen;
 
+import control.GameManager;
 import processing.core.PApplet;
 
 public class MenuScreen implements Screen {

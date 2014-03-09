@@ -2,8 +2,8 @@ package main;
 
 import java.util.Stack;
 
+import control.GameManager;
 import processing.core.PApplet;
-import screen.GameManager;
 import screen.GameScreen;
 import screen.Screen;
 

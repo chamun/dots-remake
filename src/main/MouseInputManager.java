@@ -31,4 +31,5 @@ public class MouseInputManager {
 	 * Returns the current mouseY in the object's coordinate system
 	 */
 	public float getOCSy(Rectangle r) { return applet.mouseY - r.getY(); }
+	
 }

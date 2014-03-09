@@ -1,9 +1,10 @@
 package control;
 
+import gui.CircleBoard;
+
 import java.util.Random;
 
 import model.Circle;
-import screen.GameScreen;
 
 public class CircleFactory {
 	
@@ -20,7 +21,7 @@ public class CircleFactory {
 	
 	public Circle newCircle(int row, int col) {
 		int color = randomColor();
-		return new Circle(row, col, color, GameScreen.BALL_DIAMETER);
+		return new Circle(row, col, color, CircleBoard.BALL_DIAMETER);
 	}
 
 	
