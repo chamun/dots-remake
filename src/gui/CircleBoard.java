@@ -22,7 +22,6 @@ public class CircleBoard
 	
 	private static final int COLUMNS = 6;
 	private static final int ROWS = 6;
-	public  static int BALL_DIAMETER; /* FIXME: this should not be here */
 		
 	private CircleManager circleManager;
 	private List<Animation> animations = new ArrayList<Animation>();
@@ -31,8 +30,8 @@ public class CircleBoard
 			float width, float height) {
 		super(x, y, width, height);
 		
-		BALL_DIAMETER = (int) width / ROWS / 2;
-		circleManager = new CircleManager(ROWS, COLUMNS);
+		int circleDiameter = (int) width / ROWS / 2;
+		circleManager = new CircleManager(ROWS, COLUMNS, circleDiameter);
 		circleManager.setAnimationHandler(this);
 	}
 

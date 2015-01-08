@@ -1,6 +1,5 @@
 package control;
 
-import gui.CircleBoard;
 import gui.animations.AnimationHandler;
 
 import java.util.ArrayList;
@@ -17,27 +16,31 @@ public class CircleManager {
 	private boolean graph [][];
 	private CircleFactory factory;
 	private AnimationHandler animationHandler;
+	private int circleDiameter;
 	
 	private boolean hasCycle = false;
 
-	public CircleManager(int rows, int columns) {
+	public CircleManager(int rows, int columns, int circleDiameter) {
 		this.rows = rows;
 		this.cols = columns;
+		this.circleDiameter = circleDiameter;
 		circles = new Circle[rows][columns];
 		graph = new boolean [rows * columns][rows * columns];
 		factory = CircleFactory.instance();
 
 		for (int row = 0; row < rows; row ++)
 			for (int col = 0; col < cols; col++)
-				circles[row][col] = factory.newCircle(row, col);
+				circles[row][col] = factory.newCircle(row, col, circleDiameter);
 		
-		circles[0][0] = new Circle(0, 0, 0xff000000, CircleBoard.BALL_DIAMETER);
-		circles[1][0] = new Circle(1, 0, 0xff000000, CircleBoard.BALL_DIAMETER);
-		circles[0][1] = new Circle(0, 1, 0xff000000, CircleBoard.BALL_DIAMETER);
-		circles[1][1] = new Circle(1, 1, 0xff000000, CircleBoard.BALL_DIAMETER);
-		circles[2][1] = new Circle(2, 1, 0xff000000, CircleBoard.BALL_DIAMETER);
-		circles[1][2] = new Circle(1, 2, 0xff000000, CircleBoard.BALL_DIAMETER);
-		circles[2][2] = new Circle(2, 2, 0xff000000, CircleBoard.BALL_DIAMETER);
+		/*
+		circles[0][0] = new Circle(0, 0, 0xff000000, circleDiameter);
+		circles[1][0] = new Circle(1, 0, 0xff000000, circleDiameter);
+		circles[0][1] = new Circle(0, 1, 0xff000000, circleDiameter);
+		circles[1][1] = new Circle(1, 1, 0xff000000, circleDiameter);
+		circles[2][1] = new Circle(2, 1, 0xff000000, circleDiameter);
+		circles[1][2] = new Circle(1, 2, 0xff000000, circleDiameter);
+		circles[2][2] = new Circle(2, 2, 0xff000000, circleDiameter);
+		*/
 
 	}
 
@@ -190,7 +193,7 @@ public class CircleManager {
 		int fallFrom = -1;
 		while (currentRow >= 0) {
 			do {
-				circles[currentRow][col] = factory.newCircle(currentRow, col);
+				circles[currentRow][col] = factory.newCircle(currentRow, col, circleDiameter);
 				/* If we just removed all circles of the same color from 
 				 * the board, we will not create any new circle with that 
 				 * color.

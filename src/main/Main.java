@@ -2,10 +2,11 @@ package main;
 
 import java.util.Stack;
 
-import control.GameManager;
 import processing.core.PApplet;
 import screen.GameScreen;
+import screen.MenuScreen;
 import screen.Screen;
+import control.GameManager;
 
 
 @SuppressWarnings("serial")
@@ -36,8 +37,8 @@ public class Main
 		
 		MouseInputManager.init(this);		
 		
-		// screens.push(new MenuScreen(this, this));
-		startGame();
+		screens.push(new MenuScreen(this, this));
+		//startGame();
 	}
 
 	public void draw() {

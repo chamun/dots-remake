@@ -1,7 +1,5 @@
 package control;
 
-import gui.CircleBoard;
-
 import java.util.Random;
 
 import model.Circle;
@@ -19,9 +17,9 @@ public class CircleFactory {
 	}
 	
 	
-	public Circle newCircle(int row, int col) {
+	public Circle newCircle(int row, int col, int diameter) {
 		int color = randomColor();
-		return new Circle(row, col, color, CircleBoard.BALL_DIAMETER);
+		return new Circle(row, col, color, diameter);
 	}
 
 	
