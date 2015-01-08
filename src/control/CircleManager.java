@@ -1,6 +1,7 @@
 package control;
 
 import gui.animations.AnimationHandler;
+import gui.animations.StubAnimationHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class CircleManager {
 		circles = new Circle[rows][columns];
 		graph = new boolean [rows * columns][rows * columns];
 		factory = CircleFactory.instance();
+		animationHandler = new StubAnimationHandler();
 
 		for (int row = 0; row < rows; row ++)
 			for (int col = 0; col < cols; col++)
@@ -82,7 +84,7 @@ public class CircleManager {
 	
 	private void checkCycleAndNotify() {
 		boolean cycle = hasCycle();
-		if (cycle && !hasCycle && animationHandler != null) {
+		if (cycle && !hasCycle) {
 			int color = selected.peek().getFill();
 			for (int i = 0; i < rows * cols; i++) {
 				Circle c = circles[i / rows][i % cols];
@@ -200,17 +202,15 @@ public class CircleManager {
 				 */
 			} while (hasCycle && circles[currentRow][col].getFill() == color);
 			Circle c = circles[currentRow][col];
-			animationHandler.newFallingAnimation(c.getColumn(), 
-					fallFrom, currentRow, c);
+			animationHandler.newFallingAnimation(c.getColumn(), fallFrom, currentRow, c);
 			currentRow--;
 			fallFrom--;
 		}
 	}
 
 	private void setCircleNewRow(Circle c, int newRow) {
-		if (animationHandler != null)
-			animationHandler.newFallingAnimation(
-					c.getColumn(), c.getRow(), newRow, c);
+		animationHandler.newFallingAnimation(
+				c.getColumn(), c.getRow(), newRow, c);
 		
 		circles[newRow][c.getColumn()] = c;
 		c.setRow(newRow);
