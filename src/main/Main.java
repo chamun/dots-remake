@@ -29,14 +29,14 @@ public class Main
 		PApplet.main(new String[] {"--bgcolor=#DFDFDF", PACKAGENAME+"."+CLASSNAME });
 	}
 
+	public void settings() {
+		size(500, 500);
+	}
+
 	public void setup() {
-		size(SCREEN_WIDTH, SCREEN_HEIGHT);		
 		frameRate(FPS);
-		if (frame != null)
-			frame.setTitle("Dotz");
-		
-		MouseInputManager.init(this);		
-		
+		MouseInputManager.init(this);
+
 		screens.push(new MenuScreen(this, this));
 		//startGame();
 	}
